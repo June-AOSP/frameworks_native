@@ -4587,15 +4587,18 @@ void SurfaceFlinger::processDisplayAdded(const wp<IBinder>& displayToken,
         ALOGE_IF(status != NO_ERROR, "Unable to query format (%d)", status);
         pixelFormat = static_cast<ui::PixelFormat>(format);
         // Check if VDS is allowed to use HWC
-        size_t maxVirtualDisplaySize = getHwComposer().getMaxVirtualDisplayDimension();
-        if (maxVirtualDisplaySize == 0 || ((uint64_t)resolution.width <= maxVirtualDisplaySize &&
-            (uint64_t)resolution.height <= maxVirtualDisplaySize)) {
-            uint64_t usage = 0;
-            // Replace with native_window_get_consumer_usage ?
-            status = state.getVirtual().surface->getConsumerUsage(&usage);
-            ALOGW_IF(status != NO_ERROR, "Unable to query usage (%d)", status);
-            if ((status == NO_ERROR) && canAllocateHwcDisplayIdForVDS(usage)) {
-                canAllocateHwcForVDS = true;
+        if (mVirtualDisplayIdGenerators.hal) {
+            size_t maxVirtualDisplaySize = getHwComposer().getMaxVirtualDisplayDimension();
+            if (maxVirtualDisplaySize == 0 ||
+                ((uint64_t)resolution.width <= maxVirtualDisplaySize &&
+                (uint64_t)resolution.height <= maxVirtualDisplaySize)) {
+                uint64_t usage = 0;
+                // Replace with native_window_get_consumer_usage ?
+                status = state.getVirtual().surface->getConsumerUsage(&usage);
+                ALOGW_IF(status != NO_ERROR, "Unable to query usage (%d)", status);
+                if ((status == NO_ERROR) && canAllocateHwcDisplayIdForVDS(usage)) {
+                   canAllocateHwcForVDS = true;
+               }
             }
         }
     } else {
