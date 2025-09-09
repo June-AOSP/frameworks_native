@@ -3788,7 +3788,7 @@ ui::Rotation SurfaceFlinger::getPhysicalDisplayOrientation(PhysicalDisplayId dis
             default:
                 break;
         }
-    } else if (isInternalDisplay) {
+    } else {
         using Values = SurfaceFlingerProperties::secondary_display_orientation_values;
         switch (secondary_display_orientation(Values::ORIENTATION_0)) {
             case Values::ORIENTATION_90:
