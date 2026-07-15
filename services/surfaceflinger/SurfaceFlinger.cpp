@@ -3772,10 +3772,6 @@ ui::Rotation SurfaceFlinger::getPhysicalDisplayOrientation(PhysicalDisplayId dis
         }
     }
 
-    const bool isInternalDisplay = mPhysicalDisplays.get(displayId)
-                                           .transform(&PhysicalDisplay::isInternal)
-                                           .value_or(false);
-
     if (isPrimary) {
         using Values = SurfaceFlingerProperties::primary_display_orientation_values;
         switch (primary_display_orientation(Values::ORIENTATION_0)) {
