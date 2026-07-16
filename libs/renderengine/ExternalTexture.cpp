@@ -15,6 +15,7 @@
  */
 
 #include <common/trace.h>
+#include <cinttypes>
 #include <log/log.h>
 #include <renderengine/RenderEngine.h>
 #include <renderengine/impl/ExternalTexture.h>
@@ -27,6 +28,16 @@ ExternalTexture::ExternalTexture(const sp<GraphicBuffer>& buffer,
       : mBuffer(buffer), mRenderEngine(renderEngine), mWritable(usage & WRITEABLE) {
     LOG_ALWAYS_FATAL_IF(buffer == nullptr,
                         "Attempted to bind a null buffer to an external texture!");
+    if (buffer != nullptr) {
+        ui::Dataspace ds = ui::Dataspace::UNKNOWN;
+        buffer->getDataspace(&ds);
+        ALOGD("DEBUG_ExternalTexture: ptr=%p handle=%p w=%d h=%d stride=%d fmt=0x%x usage=0x%" PRIx64
+              " dataspace=0x%x layers=%d",
+              buffer.get(), buffer->getNativeBuffer()->handle,
+              buffer->getWidth(), buffer->getHeight(), buffer->getStride(),
+              buffer->getPixelFormat(), buffer->getUsage(),
+              static_cast<uint32_t>(ds), buffer->getLayerCount());
+    }
     mRenderEngine.mapExternalTextureBuffer(mBuffer, mWritable);
 }
 

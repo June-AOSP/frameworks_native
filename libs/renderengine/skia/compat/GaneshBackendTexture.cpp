@@ -31,6 +31,7 @@
 #include "skia/compat/SkiaBackendTexture.h"
 
 #include <android/hardware_buffer.h>
+#include <cinttypes>
 #include <common/trace.h>
 #include <log/log_main.h>
 
@@ -47,6 +48,13 @@ GaneshBackendTexture::GaneshBackendTexture(sk_sp<GrDirectContext> grContext,
 
     // Save this for use in makeImage() and makeSurface().
     mColorType = AHardwareBufferUtils::GetSkColorTypeFromBufferFormat(desc.format);
+
+    ALOGD("DEBUG_GaneshBackendTexture: fmt=0x%x(%d) wxh=%dx%d layers=%u usage=0x%" PRIx64
+          " stride=%u colorType=%d api=%s output=%d protect=%d",
+          desc.format, desc.format, desc.width, desc.height, desc.layers, desc.usage, desc.stride,
+          static_cast<int>(mColorType),
+          grContext->backend() == GrBackendApi::kOpenGL ? "GL" : "VK",
+          isOutputBuffer, createProtectedImage);
 
     const bool createProtectedImage = 0 != (desc.usage & AHARDWAREBUFFER_USAGE_PROTECTED_CONTENT);
 
